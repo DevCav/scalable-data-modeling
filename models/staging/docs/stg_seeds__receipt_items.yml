@@ -1,0 +1,119 @@
+version: 2
+
+models:
+  - name: stg_seeds__receipt_items
+    description: "Expanded receipt items table, with each row representing an individual item scanned from a receipt."
+    columns:
+      - name: receipt_uuid
+        description: "Unique identifier for the receipt."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_receipts')
+              field: receipt_uuid
+
+      - name: user_id
+        description: "User ID who scanned the receipt."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_users')
+              field: user_id
+
+      - name: purchase_date
+        description: "Date of purchase for this receipt."
+        tests:
+          - not_null
+
+      - name: points_earned
+        description: "Number of points awarded for this receipt."
+        tests:
+          - not_null
+          - expression_is_true:
+              expression: "points_earned >= 0"
+
+      - name: purchased_item_count
+        description: "Total number of items purchased in the receipt."
+        tests:
+          - not_null
+          - expression_is_true:
+              expression: "purchased_item_count >= 0"
+
+      - name: rewards_receipt_status
+        description: "Status of the receipt in the validation process."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Accepted", "Rejected", "Pending", "Finished"]
+
+      - name: total_spent
+        description: "Total amount spent in this receipt."
+        tests:
+          - not_null
+          - expression_is_true:
+              expression: "total_spent >= 0"
+
+      - name: barcode
+        description: "Barcode of the item scanned."
+        tests:
+          - not_null
+
+      - name: description
+        description: "Description of the item scanned."
+
+      - name: final_price
+        description: "Final price of the item after discounts."
+        tests:
+          - not_null
+          - expression_is_true:
+              expression: "final_price >= 0"
+
+      - name: item_price
+        description: "Original price of the item before discounts."
+        tests:
+          - not_null
+          - expression_is_true:
+              expression: "item_price >= 0"
+
+      - name: needs_fetch_review
+        description: "Boolean flag indicating whether the item requires review."
+        tests:
+          - accepted_values:
+              values: [true, false]
+
+      - name: partner_item_id
+        description: "Unique identifier for the item in Fetch's partner catalog."
+
+      - name: prevent_target_gap_points
+        description: "Boolean flag indicating whether the item should be excluded from target gap calculations."
+        tests:
+          - accepted_values:
+              values: [true, false]
+
+      - name: quantity_purchased
+        description: "Number of units of this item purchased."
+        tests:
+          - not_null
+          - expression_is_true:
+              expression: "quantity_purchased >= 0"
+
+      - name: user_flagged_barcode
+        description: "Barcode manually entered by the user if different from the scanned one."
+
+      - name: user_flagged_new_item
+        description: "Boolean flag indicating whether the user marked this item as new."
+        tests:
+          - accepted_values:
+              values: [true, false]
+
+      - name: user_flagged_price
+        description: "Price manually entered by the user if different from the scanned one."
+        tests:
+          - expression_is_true:
+              expression: "user_flagged_price >= 0"
+
+      - name: user_flagged_quantity
+        description: "Quantity manually entered by the user."
+        tests:
+          - expression_is_true:
+              expression: "user_flagged_quantity >= 0"

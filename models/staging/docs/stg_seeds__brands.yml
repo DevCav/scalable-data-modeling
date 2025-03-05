@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: stg_seeds__brands
+    description: "Staging table for brands, transforming and standardizing raw brand data."
+    columns:
+      - name: brand_uuid
+        description: "Unique identifier for the brand."
+        tests:
+          - not_null
+          - unique
+
+      - name: barcode
+        description: "The barcode on the item."
+        tests:
+          - not_null
+          - unique  # Ensures barcode is unique across products
+
+      - name: brand_code
+        description: "String that corresponds with the brand column in a partner product file."
+        tests:
+          - not_null
+
+      - name: category
+        description: "The category name for which the brand sells products in."
+        tests:
+          - not_null
+
+      - name: category_code
+        description: "The category code that references a BrandCategory."
+        tests:
+          - not_null
+
+      - name: cpg
+        description: "Reference to the CPG collection."
+        tests:
+          - relationships:
+              to: ref('stg_cpg')  # Ensure this links correctly to CPG table
+              field: cpg_id
+
+      - name: top_brand
+        description: "Boolean indicator for whether the brand should be featured as a 'top brand'."
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: name
+        description: "Brand name."
+        tests:
+          - not_null

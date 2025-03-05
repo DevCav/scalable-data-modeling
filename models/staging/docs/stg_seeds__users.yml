@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: stg_seeds__users
+    description: "Staging table for users, transforming and standardizing raw user data."
+    columns:
+      - name: user_id
+        description: "Unique identifier for the user."
+        tests:
+          - not_null
+          - unique
+
+      - name: state
+        description: "State abbreviation where the user is located."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA",
+                       "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+                       "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT",
+                       "VA", "WA", "WV", "WI", "WY"]
+
+      - name: created_date
+        description: "Date when the user created their account."
+        tests:
+          - not_null
+
+      - name: last_login
+        description: "Last time the user logged into the app."
+        tests:
+          - not_null
+
+      - name: role
+        description: "Constant value set to 'CONSUMER'."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["CONSUMER"]
+
+      - name: active
+        description: "Indicates if the user is active."
+        tests:
+          - not_null
+          - accepted_values:
+              values: [true, false]
+
+      - name: sign_up_source
+        description: "The source through which the user signed up."

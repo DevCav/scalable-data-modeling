@@ -1,0 +1,89 @@
+version: 2
+
+models:
+  - name: stg_seeds__receipts
+    description: "Staging table for receipts, transforming and standardizing raw receipt data."
+    columns:
+      - name: receipt_id
+        description: "Unique identifier for the receipt."
+        data_tests:
+          - not_null
+          - unique
+
+      - name: user_id
+        description: "User ID associated with the receipt."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('stg_users')
+              field: user_id
+
+      - name: purchase_date
+        description: "The date of the purchase."
+        data_tests:
+          - not_null
+
+      - name: create_date
+        description: "The date the event was created."
+        data_tests:
+          - not_null
+
+      - name: date_scanned
+        description: "Date the user scanned their receipt."
+        data_tests:
+          - not_null
+
+      - name: finished_date
+        description: "Date the receipt finished processing."
+        data_tests:
+          - not_null
+
+      - name: modify_date
+        description: "The date the event was modified."
+        data_tests:
+          - not_null
+
+      - name: points_awarded_date
+        description: "The date points were awarded for the transaction."
+        data_tests:
+          - not_null
+
+      - name: points_earned
+        description: "The number of points earned for the receipt."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "points_earned >= 0"
+
+      - name: purchased_item_count
+        description: "The count of number of items on the receipt."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "purchased_item_count >= 0"
+
+      - name: rewards_receipt_item_list
+        description: "The items that were purchased on the receipt."
+        data_tests:
+          - not_null
+
+      - name: rewards_receipt_status
+        description: "Status of the receipt through receipt validation and processing."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ["Pending", "Accepted", "Rejected"]
+
+      - name: total_spent
+        description: "The total amount on the receipt."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "total_spent >= 0"
+
+      - name: bonus_points_earned
+        description: "Number of bonus points that were awarded upon receipt completion."
+        data_tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "bonus_points_earned >= 0"
